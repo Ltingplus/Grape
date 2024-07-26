@@ -5,3 +5,4 @@
 #include "Grape/IApplication.h"
 
 #include "Grape/EntryPoint.h"
+#include "Grape/Log.h"

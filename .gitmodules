@@ -1,0 +1,3 @@
+[submodule "Grape/thirdparty/spdlog"]
+	path = Grape/thirdparty/spdlog
+	url = https://github.com/gabime/spdlog.git

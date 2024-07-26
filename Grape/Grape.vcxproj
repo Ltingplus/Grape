@@ -15,9 +15,11 @@
     <ClInclude Include="src\Grape\EntryPoint.h" />
     <ClInclude Include="src\Grape\IApplication.h" />
     <ClInclude Include="src\Grape\Core.h" />
+    <ClInclude Include="src\Grape\Log.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Grape\IApplication.cpp" />
+    <ClCompile Include="src\Grape\Log.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -66,6 +68,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GP_PLATFORM_WINDOWS;GP_BUILD_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Grape\thirdparty\spdlog\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -80,6 +83,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Grape\thirdparty\spdlog\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
