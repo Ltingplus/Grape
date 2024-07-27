@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+#include "Events/IEvent.h"
 
 namespace Grape
 {

@@ -18,6 +18,9 @@ project "Grape"
 	targetdir ("bin/" ..outputdir.. "/%{prj.name}")
 	objdir ("bin-int/" ..outputdir.. "/%{prj.name}")
 
+	pchheader "gppch.h"
+	pchsource "Grape/src/gppch.cpp"
+
 	files 
 	{
 		"%{prj.name}/src/**.h",
@@ -26,6 +29,7 @@ project "Grape"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/thirdparty/spdlog/include"
 	}
 

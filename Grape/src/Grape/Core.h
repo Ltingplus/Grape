@@ -7,3 +7,6 @@
 #define GRAPE_API __declspec(dllimport)
 #endif
 #endif // GP_PLATFORM_WINDOWS
+
+
+#define BIT(x) (1 << x)
