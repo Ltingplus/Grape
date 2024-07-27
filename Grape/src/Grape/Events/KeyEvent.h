@@ -1,8 +1,6 @@
 #pragma once
 #include "IEvent.h"
 
-#include <sstream>
-
 namespace Grape
 {
 	class GRAPE_API KeyEvent : public IEvent

@@ -10,6 +10,12 @@ workspace "Grape"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Grape/thirdparty/GLFW/include"
+
+include "Grape/thirdparty/GLFW"
+
 project "Grape"
 	location "Grape"
 	kind "SharedLib"
@@ -30,7 +36,14 @@ project "Grape"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/thirdparty/spdlog/include"
+		"%{prj.name}/thirdparty/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"

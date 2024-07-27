@@ -2,8 +2,7 @@
 
 #include "Grape/Core.h"
 
-#include <string>
-#include <functional>
+#include "gppch.h"
 
 namespace Grape
 {

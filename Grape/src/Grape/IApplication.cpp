@@ -6,11 +6,14 @@
 #include "Grape/Events/ApplicationEvent.h"
 #include "Grape/Log.h"
 
+#include <GLFW/glfw3.h>
+
 namespace Grape
 {
 	IApplication::IApplication()
 	{
-
+		m_window = IWindow::Create();
+		//m_window = std::make_unique<IWindow>(IWindow::Create());
 	}
 
 	IApplication::~IApplication()
@@ -20,13 +23,12 @@ namespace Grape
 
 	void IApplication::Run()
 	{
-		WindowResizeEvent e(1280, 720);
-		if (e.IsInCategory(EventCategoryApplication))
-			GP_CLIENT_INFO("Hello!");
-		if (e.IsInCategory(EventCategoryInput))
-			;//GP_CLIENT_TRACE(e);
-
-		while (true);
+		while (m_running)
+		{
+			glClearColor(1, 0, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+			m_window->OnUpdate();
+		}
 	}
 
 }

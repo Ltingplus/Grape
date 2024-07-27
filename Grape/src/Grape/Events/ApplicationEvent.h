@@ -2,7 +2,6 @@
 
 #include "IEvent.h"
 
-#include <sstream>
 
 namespace Grape
 {
