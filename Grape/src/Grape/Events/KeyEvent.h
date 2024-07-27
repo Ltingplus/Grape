@@ -13,14 +13,15 @@ namespace Grape
 			:m_keyCode(keyCode)
 		{}
 
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
 		int m_keyCode;
 	};
 
-	class GRAPE_API KeyPressEvent : public KeyEvent
+	class GRAPE_API KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressEvent(int keyCode, int repeatCount)
+		KeyPressedEvent(int keyCode, int repeatCount)
 			:KeyEvent(keyCode)
 			, m_repeatCount(repeatCount)
 		{}

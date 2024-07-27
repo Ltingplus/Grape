@@ -10,15 +10,18 @@
 
 namespace Grape
 {
+#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
 	IApplication::IApplication()
 	{
 		m_window = IWindow::Create();
 		//m_window = std::make_unique<IWindow>(IWindow::Create());
+		m_window->SetEventCallback(BIND_EVENT_FN(IApplication::OnEvent));
 	}
 
 	IApplication::~IApplication()
 	{
-
+		delete m_window;
 	}
 
 	void IApplication::Run()
@@ -29,6 +32,20 @@ namespace Grape
 			glClear(GL_COLOR_BUFFER_BIT);
 			m_window->OnUpdate();
 		}
+	}
+
+	void IApplication::OnEvent(IEvent& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(IApplication::OnWindowClose));
+
+		GP_CORE_TRACE("{0}", e.ToString());
+	}
+
+	bool IApplication::OnWindowClose(WindowCloseEvent& e)
+	{
+		m_running = false;
+		return true;
 	}
 
 }

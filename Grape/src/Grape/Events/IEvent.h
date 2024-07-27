@@ -57,6 +57,11 @@ namespace Grape
 			return GetCategoryFlags() & category;
 		}
 
+		inline std::ostream& operator<<(std::ostream& os)
+		{
+			return os << ToString();
+		}
+
 	protected:
 		bool m_handled = false; // 事件是否被处理。被处理后不再传递
 	};
@@ -87,4 +92,5 @@ namespace Grape
 	private:
 		IEvent& m_event;
 	};
+	
 }

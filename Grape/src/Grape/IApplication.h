@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "Events/IEvent.h"
+#include "Events/ApplicationEvent.h"
 #include "IWindow.h"
 
 namespace Grape
@@ -13,6 +14,12 @@ namespace Grape
 		virtual ~IApplication();
 
 		void Run();
+		void OnEvent(IEvent& e);
+
+	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+
+	private:
 
 	private:
 		//std::unique_ptr<IWindow> m_window;
