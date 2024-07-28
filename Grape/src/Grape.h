@@ -6,3 +6,4 @@
 
 #include "Grape/EntryPoint.h"
 #include "Grape/Log.h"
+#include "Grape/ILayer.h"

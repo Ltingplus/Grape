@@ -64,14 +64,17 @@ project "Grape"
 
 	filter "configurations:Debug"
 		defines "GP_DEBUG"
-		optimize "On"
+		buildoptions "/MDd" -- 多线程调式
+		symbols "On"
 
 	filter "configurations:Release"
 		defines "GP_RELEASE"
+		buildoptions "/MD"  -- 多线程
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "GP_Dist"
+		buildoptions "/MD"
 		optimize "On"
 
 
@@ -112,13 +115,16 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "GP_DEBUG"
-		optimize "On"
+		buildoptions "/MDd"
+		symbols "On"
 
 	filter "configurations:Release"
 		defines "GP_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "GP_Dist"
+		buildoptions "/MD"
 		optimize "On"
 
