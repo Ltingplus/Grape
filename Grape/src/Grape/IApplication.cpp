@@ -10,7 +10,6 @@
 
 namespace Grape
 {
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 	IApplication* IApplication::s_instance = nullptr;
 
@@ -19,7 +18,7 @@ namespace Grape
 	{
 		GP_CORE_ASSERT(!s_instance, "Application already exists!");
 		s_instance = this;
-		m_window->SetEventCallback(BIND_EVENT_FN(IApplication::OnEvent));
+		m_window->SetEventCallback(GP_BIND_EVENT_FN(IApplication::OnEvent));
 	}
 
 	IApplication::~IApplication()
@@ -43,7 +42,7 @@ namespace Grape
 	void IApplication::OnEvent(IEvent& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(IApplication::OnWindowClose));
+		dispatcher.Dispatch<WindowCloseEvent>(GP_BIND_EVENT_FN(IApplication::OnWindowClose));
 
 		//GP_CORE_TRACE("{0}", e.ToString());
 

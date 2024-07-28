@@ -181,6 +181,14 @@ namespace Grape
 				MouseMovedEvent event((float)xPos, (float)yPos);
 				data.EventCallback(event);
 			});
+
+		glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int keycode)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				KeyTypedEvent event(keycode);
+				data.EventCallback(event);
+			});
 	}
 
 	void WindowsWindow::Shutdown()

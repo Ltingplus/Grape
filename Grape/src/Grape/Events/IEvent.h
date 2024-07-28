@@ -19,6 +19,7 @@ namespace Grape
 		AppRender,
 		KeyPressed,
 		KeyReleased,
+		KeyTyped,
 		MouseButtonPressed, 
 		MouseButtonReleased, 
 		MouseMoved,
