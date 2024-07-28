@@ -6,6 +6,8 @@
 #include "Grape/Events/KeyEvent.h"
 #include "Grape/Events/MouseEvent.h"
 
+#include "glad/glad.h"
+
 
 namespace Grape
 {
@@ -86,6 +88,10 @@ namespace Grape
 		m_window = glfwCreateWindow((int)props.Width, (int)props.Height
 			, props.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_window);
+		// º”‘ÿGLAD
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		GP_CORE_ASSERT(status, "Faild to initialize GLAD!");
+
 		glfwSetWindowUserPointer(m_window, &m_data);
 		SetVSync(true);
 

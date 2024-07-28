@@ -13,8 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Grape/thirdparty/GLFW/include"
+IncludeDir["Glad"] = "Grape/thirdparty/Glad/include"
 
 include "Grape/thirdparty/GLFW"
+include "Grape/thirdparty/Glad"
 
 project "Grape"
 	location "Grape"
@@ -37,12 +39,14 @@ project "Grape"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/thirdparty/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
 	}
 
 	links
 	{
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 
@@ -54,7 +58,8 @@ project "Grape"
 		defines
 		{
 			"GP_PLATFORM_WINDOWS",
-			"GP_BUILD_DLL"
+			"GP_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
