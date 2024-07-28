@@ -12,9 +12,13 @@ namespace Grape
 {
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
+	IApplication* IApplication::s_instance = nullptr;
+
 	IApplication::IApplication()
 		: m_window(IWindow::Create())
 	{
+		GP_CORE_ASSERT(!s_instance, "Application already exists!");
+		s_instance = this;
 		m_window->SetEventCallback(BIND_EVENT_FN(IApplication::OnEvent));
 	}
 
@@ -54,11 +58,13 @@ namespace Grape
 	void IApplication::PushLayer(ILayer* layer)
 	{
 		m_layerStack.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void IApplication::PushOverlayer(ILayer* layer)
 	{
 		m_layerStack.PushOverlayer(layer);
+		layer->OnAttach();
 	}
 
 	bool IApplication::OnWindowClose(WindowCloseEvent& e)

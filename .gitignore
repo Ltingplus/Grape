@@ -401,3 +401,9 @@ FodyWeavers.xsd
 .vs/
 bin/
 bin-int/
+Grape/thirdparty/imgui/examples/
+
+# vs files
+*.vcxproj
+*.vcxproj.filters
+*.sln

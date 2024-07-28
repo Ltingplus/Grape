@@ -25,6 +25,7 @@ public:
 	SandboxApp()
 	{
 		PushLayer(new ExampleLayer());
+		PushOverlayer(new Grape::ImGuiLayer());
 	}
 
 	~SandboxApp()

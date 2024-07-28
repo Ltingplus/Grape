@@ -10,9 +10,12 @@ namespace Grape
 {
 	class GRAPE_API IApplication
 	{
+
 	public:
 		IApplication();
 		virtual ~IApplication();
+
+		static IApplication& Get() { return *s_instance; }
 
 		void Run();
 		void OnEvent(IEvent& e);
@@ -20,11 +23,13 @@ namespace Grape
 		void PushLayer(ILayer* layer);
 		void PushOverlayer(ILayer* layer);
 
+		IWindow& GetWindow() { return *m_window; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 
 	private:
-
+		static IApplication* s_instance;
 	private:
 		std::unique_ptr<IWindow> m_window;
 		bool m_running = true;
