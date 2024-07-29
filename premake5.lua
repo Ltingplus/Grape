@@ -1,5 +1,6 @@
 workspace "Grape"
 	architecture "x64"
+	startproject "Sandbox"
 
 	configurations
 	{
@@ -15,6 +16,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Grape/thirdparty/GLFW/include"
 IncludeDir["Glad"] = "Grape/thirdparty/Glad/include"
 IncludeDir["ImGui"] = "Grape/thirdparty/imgui"
+IncludeDir["glm"] = "Grape/thirdparty/glm"
 
 include "Grape/thirdparty/GLFW"
 include "Grape/thirdparty/Glad"
@@ -35,6 +37,7 @@ project "Grape"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/thirdparty/glm/glm/**.hpp"
 	}
 
 	includedirs
@@ -43,7 +46,8 @@ project "Grape"
 		"%{prj.name}/thirdparty/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -104,7 +108,8 @@ project "Sandbox"
 	includedirs
 	{
 		"Grape/thirdparty/spdlog/include",
-		"Grape/src"
+		"Grape/src",
+		"%{IncludeDir.glm}"
 	}
 
 	links
