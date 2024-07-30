@@ -6,7 +6,7 @@
 #include "Grape/Events/KeyEvent.h"
 #include "Grape/Events/MouseEvent.h"
 
-#include "glad/glad.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 
 namespace Grape
@@ -36,7 +36,7 @@ namespace Grape
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_window);
+		m_context->SwapBuffers();
 	}
 
 	unsigned int WindowsWindow::GetWidth() const
@@ -87,10 +87,9 @@ namespace Grape
 
 		m_window = glfwCreateWindow((int)props.Width, (int)props.Height
 			, props.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_window);
-		// ¼ÓÔØGLAD
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		GP_CORE_ASSERT(status, "Faild to initialize GLAD!");
+		
+		m_context = new OpenGLContext(m_window);
+		m_context->Init();
 
 		glfwSetWindowUserPointer(m_window, &m_data);
 		SetVSync(true);
@@ -194,5 +193,6 @@ namespace Grape
 	void WindowsWindow::Shutdown()
 	{
 		glfwDestroyWindow(m_window);
+		delete m_context;
 	}
 }

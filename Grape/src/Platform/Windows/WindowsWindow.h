@@ -3,6 +3,7 @@
 #include "Grape/IWindow.h"
 
 #include <GLFW/glfw3.h>
+#include "Grape/Renderer/IGraphicsContext.h"
 
 namespace Grape
 {
@@ -29,6 +30,7 @@ namespace Grape
 
 	private:
 		GLFWwindow* m_window;
+		IGraphicsContext* m_context;
 
 		struct WindowData
 		{

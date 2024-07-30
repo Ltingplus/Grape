@@ -30,10 +30,13 @@ namespace Grape
 
 	private:
 		static IApplication* s_instance;
+
 	private:
 		std::unique_ptr<IWindow> m_window;
 		bool m_running = true;
 		LayerStack m_layerStack;
+
+		unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
 	};
 
 	IApplication* CreateApplication();
