@@ -1,11 +1,17 @@
 #pragma once
 
 #ifdef GP_PLATFORM_WINDOWS
+#if GP_DYNAMIC_LINK
 #ifdef GP_BUILD_DLL
 #define GRAPE_API __declspec(dllexport)
 #else
 #define GRAPE_API __declspec(dllimport)
 #endif
+#else
+#define GRAPE_API
+#endif
+#else
+#error Grape only supports Windows!
 #endif // GP_PLATFORM_WINDOWS
 
 #ifdef GP_ENABLE_ASSERTS

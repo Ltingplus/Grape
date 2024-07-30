@@ -10,7 +10,7 @@
 
 namespace Grape
 {
-	/* @brief 调试绘图层，绘制在其他层的顶部*/	
+	
 	ImGuiLayer::ImGuiLayer()
 		: ILayer("ImGuiLayer")
 	{
@@ -67,7 +67,7 @@ namespace Grape
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		IApplication& app = IApplication::Get();
-		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
 		float time = (float)glfwGetTime();
 		io.DeltaTime = m_time > 0.0f ? (time - m_time) : (1.0f / 60.0f);
@@ -164,7 +164,7 @@ namespace Grape
 	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(e.GetWidth(), e.GetHeight());
+		io.DisplaySize = ImVec2((float)e.GetWidth(), (float)e.GetHeight());
 		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
 		glViewport(0, 0, e.GetWidth(), e.GetHeight());

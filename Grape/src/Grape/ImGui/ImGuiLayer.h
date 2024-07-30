@@ -7,6 +7,9 @@
 
 namespace Grape
 {
+	/* 
+	* @brief 调试绘图层，绘制在其他层的顶部
+	*/
 	class GRAPE_API ImGuiLayer : public ILayer
 	{
 	public:

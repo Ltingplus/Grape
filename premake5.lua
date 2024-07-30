@@ -24,8 +24,10 @@ include "Grape/thirdparty/imgui"
 
 project "Grape"
 	location "Grape"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" ..outputdir.. "/%{prj.name}")
 	objdir ("bin-int/" ..outputdir.. "/%{prj.name}")
@@ -40,10 +42,16 @@ project "Grape"
 		"%{prj.name}/thirdparty/glm/glm/**.hpp"
 	}
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	includedirs
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/thirdparty/spdlog/include",
+		"%{prj.name}/thirdparty",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
@@ -59,7 +67,6 @@ project "Grape"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
 
@@ -70,31 +77,29 @@ project "Grape"
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands
-		{
-			("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-		}
 
 	filter "configurations:Debug"
 		defines "GP_DEBUG"
 		buildoptions "/MDd" -- 多线程调式
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "GP_RELEASE"
 		buildoptions "/MD"  -- 多线程
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "GP_Dist"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" ..outputdir.. "/%{prj.name}")
 	objdir ("bin-int/" ..outputdir.. "/%{prj.name}")
@@ -109,6 +114,7 @@ project "Sandbox"
 	{
 		"Grape/thirdparty/spdlog/include",
 		"Grape/src",
+		"Grape/thirdparty",
 		"%{IncludeDir.glm}"
 	}
 
@@ -118,8 +124,6 @@ project "Sandbox"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 		defines
@@ -130,15 +134,15 @@ project "Sandbox"
 	filter "configurations:Debug"
 		defines "GP_DEBUG"
 		buildoptions "/MDd"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "GP_RELEASE"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "GP_Dist"
 		buildoptions "/MD"
-		optimize "On"
+		optimize "on"
 
