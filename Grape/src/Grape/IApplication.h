@@ -5,6 +5,8 @@
 #include "Events/ApplicationEvent.h"
 #include "IWindow.h"
 #include "LayerStack.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Buffer.h"
 
 namespace Grape
 {
@@ -36,7 +38,10 @@ namespace Grape
 		bool m_running = true;
 		LayerStack m_layerStack;
 
-		unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
+		unsigned int m_vertexArray;
+		std::unique_ptr<Shader> m_shader;
+		std::unique_ptr<VertexBuffer> m_vertexBuffer;
+		std::unique_ptr<IndexBuffer> m_indexBuffer;
 	};
 
 	IApplication* CreateApplication();
