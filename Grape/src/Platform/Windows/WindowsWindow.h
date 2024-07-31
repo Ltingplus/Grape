@@ -7,41 +7,41 @@
 
 namespace Grape
 {
-	class WindowsWindow : public IWindow
-	{
-	public:
-		WindowsWindow(const WindowProps& props);
-		virtual ~WindowsWindow();
+    class WindowsWindow : public IWindow
+    {
+    public:
+        WindowsWindow(const WindowProps& props);
+        virtual ~WindowsWindow();
 
-		void OnUpdate() override;
+        void OnUpdate() override;
 
-		unsigned int GetWidth() const override;
-		unsigned int GetHeight() const override;
+        unsigned int GetWidth() const override;
+        unsigned int GetHeight() const override;
 
-		void SetEventCallback(const EventCallbackFn& callback) override;
-		void SetVSync(bool enabled) override;
-		bool IsVSync() const override;
+        void SetEventCallback(const EventCallbackFn& callback) override;
+        void SetVSync(bool enabled) override;
+        bool IsVSync() const override;
 
-		void* GetNativeWindow() const override { return m_window; }
+        void* GetNativeWindow() const override { return m_window; }
 
-	private: 
-		virtual void Init(const WindowProps& props);
-		virtual void Shutdown();
+    private: 
+        virtual void Init(const WindowProps& props);
+        virtual void Shutdown();
 
-	private:
-		GLFWwindow* m_window;
-		IGraphicsContext* m_context;
+    private:
+        GLFWwindow* m_window;
+        IGraphicsContext* m_context;
 
-		struct WindowData
-		{
-			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
+        struct WindowData
+        {
+            std::string Title;
+            unsigned int Width, Height;
+            bool VSync;
 
-			EventCallbackFn EventCallback;
-		};
+            EventCallbackFn EventCallback;
+        };
 
-		WindowData m_data;
-	};
+        WindowData m_data;
+    };
 }
 

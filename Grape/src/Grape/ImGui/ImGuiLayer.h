@@ -7,31 +7,31 @@
 
 namespace Grape
 {
-	/* 
-	* @brief 调试绘图层，绘制在其他层的顶部
-	*/
-	class GRAPE_API ImGuiLayer : public ILayer
-	{
-	public:
-		ImGuiLayer();
-		~ImGuiLayer();
+    /* 
+    * @brief 调试绘图层，绘制在其他层的顶部
+    */
+    class GRAPE_API ImGuiLayer : public ILayer
+    {
+    public:
+        ImGuiLayer();
+        ~ImGuiLayer();
 
-		void OnAttach() override;
-		void OnDetach() override;
-		void OnUpdate() override;
-		void OnEvent(IEvent& event) override;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnUpdate() override;
+        void OnEvent(IEvent& event) override;
 
-	private:
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-		bool OnMouseMovedEvent(MouseMovedEvent& e);
-		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
-		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
-		bool OnKeyTypedEvent(KeyTypedEvent& e);
-		bool OnWindowResizeEvent(WindowResizeEvent& e);
-	private:
-		float m_time = 0.0f;
-	};
+    private:
+        bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
+        bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
+        bool OnMouseMovedEvent(MouseMovedEvent& e);
+        bool OnMouseScrolledEvent(MouseScrolledEvent& e);
+        bool OnKeyPressedEvent(KeyPressedEvent& e);
+        bool OnKeyReleasedEvent(KeyReleasedEvent& e);
+        bool OnKeyTypedEvent(KeyTypedEvent& e);
+        bool OnWindowResizeEvent(WindowResizeEvent& e);
+    private:
+        float m_time = 0.0f;
+    };
 }
 

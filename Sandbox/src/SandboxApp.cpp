@@ -10,57 +10,57 @@
 
 glm::mat4 camera(float Translate, glm::vec2 const& Rotate)
 {
-	glm::mat4 Projection = glm::perspective(glm::pi<float>() * 0.25f, 4.0f / 3.0f, 0.1f, 100.f);
-	glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Translate));
-	View = glm::rotate(View, Rotate.y, glm::vec3(-1.0f, 0.0f, 0.0f));
-	View = glm::rotate(View, Rotate.x, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
-	return Projection * View * Model;
+    glm::mat4 Projection = glm::perspective(glm::pi<float>() * 0.25f, 4.0f / 3.0f, 0.1f, 100.f);
+    glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Translate));
+    View = glm::rotate(View, Rotate.y, glm::vec3(-1.0f, 0.0f, 0.0f));
+    View = glm::rotate(View, Rotate.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 Model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+    return Projection * View * Model;
 }
 
 class ExampleLayer : public Grape::ILayer
 {
 public:
-	ExampleLayer()
-		: ILayer("Example")
-	{
-	}
+    ExampleLayer()
+        : ILayer("Example")
+    {
+    }
 
-	void OnUpdate() override
-	{
-		if (Grape::IInput::IsKeyPressed(GP_KEY_TAB))
-			GP_INFO("Tab key is pressed (poll).");
-	}
+    void OnUpdate() override
+    {
+        if (Grape::IInput::IsKeyPressed(GP_KEY_TAB))
+            GP_INFO("Tab key is pressed (poll).");
+    }
 
-	void OnEvent(Grape::IEvent& event) override
-	{
-		if (event.GetEventType() == Grape::EventType::KeyPressed)
-		{
-			Grape::KeyPressedEvent& e = (Grape::KeyPressedEvent&)event;
-			if (e.GetKeyCode() == GP_KEY_SPACE)
-				GP_TRACE("Space key is pressed (event)!");
-			GP_TRACE("{0}", (char)e.GetKeyCode());
-		}
-	}
+    void OnEvent(Grape::IEvent& event) override
+    {
+        if (event.GetEventType() == Grape::EventType::KeyPressed)
+        {
+            Grape::KeyPressedEvent& e = (Grape::KeyPressedEvent&)event;
+            if (e.GetKeyCode() == GP_KEY_SPACE)
+                GP_TRACE("Space key is pressed (event)!");
+            GP_TRACE("{0}", (char)e.GetKeyCode());
+        }
+    }
 };
 class SandboxApp : public Grape::IApplication
 {
 public:
-	SandboxApp()
-	{
-		PushLayer(new ExampleLayer());
-		PushOverlayer(new Grape::ImGuiLayer());
-	}
+    SandboxApp()
+    {
+        PushLayer(new ExampleLayer());
+        PushOverlayer(new Grape::ImGuiLayer());
+    }
 
-	~SandboxApp()
-	{
+    ~SandboxApp()
+    {
 
-	}
+    }
 
 };
 
 Grape::IApplication* Grape::CreateApplication()
 {
-	return new SandboxApp();
+    return new SandboxApp();
 }
 

@@ -3,9 +3,9 @@
 
 namespace Grape
 {
-	ILayer::ILayer(const std::string& name /*= "Layer"*/)
-		: m_debugName(name)
-	{
+    ILayer::ILayer(const std::string& name /*= "Layer"*/)
+        : m_debugName(name)
+    {
 
-	}
+    }
 }

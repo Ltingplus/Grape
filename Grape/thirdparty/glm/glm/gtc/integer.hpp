@@ -24,20 +24,20 @@
 #include <limits>
 
 #if GLM_MESSAGES == GLM_ENABLE && !defined(GLM_EXT_INCLUDED)
-#	pragma message("GLM: GLM_GTC_integer extension included")
+#    pragma message("GLM: GLM_GTC_integer extension included")
 #endif
 
 namespace glm
 {
-	/// @addtogroup gtc_integer
-	/// @{
+    /// @addtogroup gtc_integer
+    /// @{
 
-	/// Returns the log2 of x for integer values. Useful to compute mipmap count from the texture size.
-	/// @see gtc_integer
-	template<length_t L, typename T, qualifier Q>
-	GLM_FUNC_DECL vec<L, T, Q> log2(vec<L, T, Q> const& v);
+    /// Returns the log2 of x for integer values. Useful to compute mipmap count from the texture size.
+    /// @see gtc_integer
+    template<length_t L, typename T, qualifier Q>
+    GLM_FUNC_DECL vec<L, T, Q> log2(vec<L, T, Q> const& v);
 
-	/// @}
+    /// @}
 } //namespace glm
 
 #include "integer.inl"

@@ -19,26 +19,26 @@
 #include "../gtc/type_precision.hpp"
 
 #ifndef GLM_ENABLE_EXPERIMENTAL
-#	error "GLM: GLM_GTX_number_precision is an experimental extension and may change in the future. Use #define GLM_ENABLE_EXPERIMENTAL before including it, if you really want to use it."
+#    error "GLM: GLM_GTX_number_precision is an experimental extension and may change in the future. Use #define GLM_ENABLE_EXPERIMENTAL before including it, if you really want to use it."
 #elif GLM_MESSAGES == GLM_ENABLE && !defined(GLM_EXT_INCLUDED)
-#	pragma message("GLM: GLM_GTX_number_precision extension included")
+#    pragma message("GLM: GLM_GTX_number_precision extension included")
 #endif
 
 namespace glm{
-	/////////////////////////////
-	// Unsigned int vector types
+    /////////////////////////////
+    // Unsigned int vector types
 
-	/// @addtogroup gtx_number_precision
-	/// @{
+    /// @addtogroup gtx_number_precision
+    /// @{
 
-	//////////////////////
-	// Float matrix types
+    //////////////////////
+    // Float matrix types
 
-	typedef f32			f32mat1;	//!< \brief Single-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
-	typedef f32			f32mat1x1;	//!< \brief Single-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
-	typedef f64			f64mat1;	//!< \brief Double-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
-	typedef f64			f64mat1x1;	//!< \brief Double-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
+    typedef f32            f32mat1;    //!< \brief Single-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
+    typedef f32            f32mat1x1;    //!< \brief Single-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
+    typedef f64            f64mat1;    //!< \brief Double-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
+    typedef f64            f64mat1x1;    //!< \brief Double-qualifier floating-point scalar. (from GLM_GTX_number_precision extension)
 
-	/// @}
+    /// @}
 }//namespace glm
 

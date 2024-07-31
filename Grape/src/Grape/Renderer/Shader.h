@@ -4,16 +4,16 @@
 
 namespace Grape
 {
-	class Shader
-	{
-	public:
-		Shader(const std::string& vertexSrc, const std::string& fragSrc);
-		~Shader();
+    class Shader
+    {
+    public:
+        Shader(const std::string& vertexSrc, const std::string& fragSrc);
+        ~Shader();
 
-		void Bind() const;
-		void unBind() const;
+        void Bind() const;
+        void unBind() const;
 
-	private:
-		uint32_t m_rendererID;
-	};
+    private:
+        uint32_t m_rendererID;
+    };
 }
