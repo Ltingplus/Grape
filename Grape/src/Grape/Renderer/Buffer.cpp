@@ -21,6 +21,7 @@ namespace Grape
 			break;
 		}
 		GP_CORE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
 	}
 
 	Grape::IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t count)
@@ -38,6 +39,7 @@ namespace Grape
 			break;
 		}
 		GP_CORE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
 	}
 
 }
