@@ -5,6 +5,7 @@
 
 #include "Grape/Events/ApplicationEvent.h"
 #include "Grape/Log.h"
+#include "Renderer/Renderer.h"
 
 #include "glad/glad.h"
 
@@ -126,15 +127,16 @@ namespace Grape
     {
         while (m_running)
         {
-            glClearColor(0.1f, 0.1f, 0.1f, 1);
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
+            RenderCommand::Clear();
+
+            Renderer::BeginScene();
 
             m_blueShader->Bind();
-            m_squareVertexArray->Bind();
-            glDrawElements(GL_TRIANGLES, m_squareVertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_squareVertexArray);
+
             m_shader->Bind();
-            m_vertexArray->Bind();
-            glDrawElements(GL_TRIANGLES, m_vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_vertexArray);
 
             for (auto layer : m_layerStack)
                 layer->OnUpdate();

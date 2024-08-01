@@ -8,8 +8,8 @@ Grape::VertexArray* Grape::VertexArray::Create()
 {
 	switch (Renderer::GetAPI())
 	{
-	case RendererApi::None: GP_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-	case  RendererApi::OpenGL: return new OpenGLVertexArray();
+	case RendererAPI::Api::None: GP_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+	case  RendererAPI::Api::OpenGL: return new OpenGLVertexArray();
 	default:
 		break;
 	}

@@ -10,12 +10,12 @@ namespace Grape
     {
         switch (Renderer::GetAPI())
         {
-        case RendererApi::None:
+        case RendererAPI::Api::None:
         {
             GP_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
             return nullptr;
         }
-        case RendererApi::OpenGL:
+        case RendererAPI::Api::OpenGL:
             return new OpenGLVertexBuffer(vertices, size);
         default:
             break;
@@ -28,12 +28,12 @@ namespace Grape
     {
         switch (Renderer::GetAPI())
         {
-        case RendererApi::None:
+        case RendererAPI::Api::None:
         {
             GP_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");
             return nullptr;
         }
-        case RendererApi::OpenGL:
+        case RendererAPI::Api::OpenGL:
             return new OpenGLIndexBuffer(indices, count);
         default:
             break;

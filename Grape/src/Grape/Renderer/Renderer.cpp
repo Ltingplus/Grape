@@ -3,5 +3,21 @@
 
 namespace Grape
 {
-    RendererApi Renderer::s_rendererAPI = RendererApi::OpenGL;
+
+    void Renderer::BeginScene()
+    {
+        // todo
+    }
+
+    void Renderer::EndScene()
+    {
+        //todo
+    }
+
+    void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray)
+    {
+        vertexArray->Bind();
+        RenderCommand::DrawIndexed(vertexArray);
+    }
+
 }

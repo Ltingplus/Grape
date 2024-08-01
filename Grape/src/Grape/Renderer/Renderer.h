@@ -1,22 +1,17 @@
 #pragma once
+#include "RenderCommand.h"
 
 namespace Grape
-{
-    enum class RendererApi
-    {
-        None = 0,
-        OpenGL = 1
-    };
+{    
 
     class Renderer
     {
     public:
-        static RendererApi GetAPI()
-        {
-            return s_rendererAPI;
-        }
+        static RendererAPI::Api GetAPI() { return RendererAPI::GetAPI(); }
+        static void BeginScene();
+        static void EndScene();
 
-    private:
-        static RendererApi s_rendererAPI;
+        static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+    
     };
 }
