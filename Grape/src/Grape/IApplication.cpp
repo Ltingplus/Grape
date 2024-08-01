@@ -10,27 +10,7 @@
 
 
 namespace Grape
-{
-    static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
-    {
-        switch (type)
-        {
-        case Grape::ShaderDataType::Float:        return GL_FLOAT;
-        case Grape::ShaderDataType::Float2:        return GL_FLOAT;
-        case Grape::ShaderDataType::Float3:        return GL_FLOAT;
-        case Grape::ShaderDataType::Float4:        return GL_FLOAT;
-        case Grape::ShaderDataType::Int:        return GL_INT;
-        case Grape::ShaderDataType::Int2:        return GL_INT;
-        case Grape::ShaderDataType::Int3:        return GL_INT;
-        case Grape::ShaderDataType::Int4:        return GL_INT;
-        case Grape::ShaderDataType::Mat3:        return GL_FLOAT;
-        case Grape::ShaderDataType::Mat4:        return GL_FLOAT;
-        default:
-            break;
-        }
-        GP_CORE_ASSERT(false, "Unknown ShaderDataType!");
-        return 0;
-    }
+{    
 
     IApplication* IApplication::s_instance = nullptr;
 
@@ -42,36 +22,27 @@ namespace Grape
         m_window->SetEventCallback(GP_BIND_EVENT_FN(IApplication::OnEvent));
     
         // ªÊ÷∆»˝Ω«–Œ≤‚ ‘
-        glGenVertexArrays(1, &m_vertexArray);
-        glBindVertexArray(m_vertexArray);
-
+        m_vertexArray.reset(VertexArray::Create());
         float vertices[3 * 7] = 
         {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
              0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
              0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
-
-        m_vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        std::shared_ptr<VertexBuffer> vertexBuffer;
+        vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        BufferLayout layout =
         {
-            BufferLayout layout =
-            {
-                {ShaderDataType::Float3, "a_position"},
-                {ShaderDataType::Float4, "a_color"},
-            };
-            m_vertexBuffer->SetLayout(layout);
-        }
-        uint32_t index = 0;
-        const auto& layout = m_vertexBuffer->GetLayout();
-        for (const auto& element : layout)
-        {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type)
-                , element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(), (const void*)element.Offset);
-            ++index;
-        }
+            {ShaderDataType::Float3, "a_position"},
+            {ShaderDataType::Float4, "a_color"},
+        };
+        vertexBuffer->SetLayout(layout);
+        m_vertexArray->AddVertexBuffer(vertexBuffer);
+        
         unsigned int indices[3] = { 0, 1, 2 };
-        m_indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        std::shared_ptr<IndexBuffer> indexBuffer;
+        indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        m_vertexArray->SetIndexBuffer(indexBuffer);
         // shader
         std::string vertexSrc = R"(
             #version 330 core
@@ -100,6 +71,51 @@ namespace Grape
             }
         )";
         m_shader.reset(new Shader(vertexSrc, fagSrc));
+
+        m_squareVertexArray.reset(VertexArray::Create());
+        float squareVertices[3 * 4] =
+        {
+            -0.75f, -0.75f, 0.0f,
+             0.75f, -0.75f, 0.0f, 
+             0.75f,  0.75f, 0.0f,
+             -0.75f,  0.75f, 0.0f
+        };
+        std::shared_ptr<VertexBuffer> sqVertexBuffer;
+        sqVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        BufferLayout sqLayout =
+        {
+            {ShaderDataType::Float3, "a_position"}
+        };
+        sqVertexBuffer->SetLayout(sqLayout);
+        m_squareVertexArray->AddVertexBuffer(sqVertexBuffer);
+
+        unsigned int sqIndices[6] = { 0, 1, 2, 2, 3, 0 };
+        std::shared_ptr<IndexBuffer> sqIndexBuffer;
+        sqIndexBuffer.reset(IndexBuffer::Create(sqIndices, sizeof(sqIndices) / sizeof(uint32_t)));
+        m_squareVertexArray->SetIndexBuffer(sqIndexBuffer);
+        // shader
+        std::string blueSqVertexSrc = R"(
+            #version 330 core
+            layout(location = 0) in vec3 a_position;
+            out vec3 v_position;
+
+            void main()
+            {
+                v_position = a_position;
+                gl_Position = vec4(a_position, 1.0);
+            }
+        )";
+        std::string blueSqFagSrc = R"(
+            #version 330 core
+            layout(location = 0) out vec4 color;
+            in vec3 v_position;
+
+            void main()
+            {
+                color = vec4(0.2f, 0.3f, 0.8f, 1.0f);
+            }
+        )";
+        m_blueShader.reset(new Shader(blueSqVertexSrc, blueSqFagSrc));
     }
 
     IApplication::~IApplication()
@@ -113,9 +129,12 @@ namespace Grape
             glClearColor(0.1f, 0.1f, 0.1f, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            m_blueShader->Bind();
+            m_squareVertexArray->Bind();
+            glDrawElements(GL_TRIANGLES, m_squareVertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
             m_shader->Bind();
-            glBindVertexArray(m_vertexArray);
-            glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+            m_vertexArray->Bind();
+            glDrawElements(GL_TRIANGLES, m_vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             for (auto layer : m_layerStack)
                 layer->OnUpdate();
