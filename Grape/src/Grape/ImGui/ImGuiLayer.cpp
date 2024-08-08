@@ -63,7 +63,7 @@ namespace Grape
     }
 
 
-    void ImGuiLayer::OnUpdate()
+    void ImGuiLayer::OnUpdate(Timestep ts)
     {
         ImGuiIO& io = ImGui::GetIO();
         IApplication& app = IApplication::Get();

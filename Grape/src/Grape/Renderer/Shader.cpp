@@ -3,6 +3,7 @@
 #include "Shader.h"
 
 #include "glad/glad.h"
+#include "glm/gtc/type_ptr.inl"
 
 namespace Grape
 {
@@ -121,6 +122,12 @@ namespace Grape
     void Shader::unBind() const
     {
         glUseProgram(0);
+    }
+
+    void Shader::UpdateUniformMatrix(const std::string& name, const glm::mat4& mat)
+    {
+        GLint location = glGetUniformLocation(m_rendererID, name.c_str());
+        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
     }
 
 }
