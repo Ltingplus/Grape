@@ -16,6 +16,7 @@ namespace Grape
         virtual void OnDetach() {}
         virtual void OnUpdate(Timestep ts) {}
         virtual void OnEvent(IEvent& event) {}
+        virtual void OnImGuiRender() {}
 
         const std::string& GetName() const { return m_debugName; }
 

@@ -1,6 +1,11 @@
 
 #include "Grape.h"
 #include "Grape/Renderer/Renderer.h"
+#include "glm/gtc/matrix_transform.hpp"
+
+#include "imgui/imgui.h"
+#include "glm/gtc/type_ptr.hpp"
+#include "Platform/OpenGL/OpenGLShader.h"
 
 using namespace Grape;
 
@@ -46,12 +51,13 @@ public:
             out vec4 v_color;
 
             uniform mat4 u_viewProjection;
+            uniform mat4 u_transform;
 
             void main()
             {
                 v_position = a_position;
                 v_color = a_color;
-                gl_Position = u_viewProjection * vec4(a_position, 1.0);
+                gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0);
             }
         )";
         std::string fagSrc = R"(
@@ -66,15 +72,15 @@ public:
                 color = v_color;
             }
         )";
-        m_shader.reset(new Shader(vertexSrc, fagSrc));
+        m_shader.reset(Shader::Create(vertexSrc, fagSrc));
 
         m_squareVertexArray.reset(VertexArray::Create());
         float squareVertices[3 * 4] =
         {
-            -0.75f, -0.75f, 0.0f,
-             0.75f, -0.75f, 0.0f,
-             0.75f,  0.75f, 0.0f,
-             -0.75f,  0.75f, 0.0f
+            -0.5f, -0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+             0.5f,  0.5f, 0.0f,
+            -0.5f,  0.5f, 0.0f
         };
         std::shared_ptr<VertexBuffer> sqVertexBuffer;
         sqVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
@@ -90,30 +96,33 @@ public:
         sqIndexBuffer.reset(IndexBuffer::Create(sqIndices, sizeof(sqIndices) / sizeof(uint32_t)));
         m_squareVertexArray->SetIndexBuffer(sqIndexBuffer);
         // shader
-        std::string blueSqVertexSrc = R"(
+        std::string flatColorVertexSrc = R"(
             #version 330 core
             layout(location = 0) in vec3 a_position;
             out vec3 v_position;
 
             uniform mat4 u_viewProjection;
+            uniform mat4 u_transform;
 
             void main()
             {
                 v_position = a_position;
-                gl_Position = u_viewProjection * vec4(a_position, 1.0);
+                gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0);
             }
         )";
-        std::string blueSqFagSrc = R"(
+        std::string flatColorFagSrc = R"(
             #version 330 core
             layout(location = 0) out vec4 color;
             in vec3 v_position;
 
+            uniform vec3 u_color;
+
             void main()
             {
-                color = vec4(0.2f, 0.3f, 0.8f, 1.0f);
+                color = vec4(u_color, 1.0f);
             }
         )";
-        m_blueShader.reset(new Shader(blueSqVertexSrc, blueSqFagSrc));
+        m_flatColorShader.reset(Shader::Create(flatColorVertexSrc, flatColorFagSrc));
     }
 
     void OnUpdate(Timestep ts) override
@@ -141,9 +150,29 @@ public:
 
         Renderer::BeginScene(m_camera);
 
-        Renderer::Submit(m_blueShader, m_squareVertexArray);
+        std::dynamic_pointer_cast<Grape::OpenGLShader>(m_flatColorShader)->Bind();
+        std::dynamic_pointer_cast<Grape::OpenGLShader>(m_flatColorShader)->UploadUniformFloat3("u_color", m_squareColor);
+
+        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+        for (int y = 0; y < 20; y++)
+        {
+            for (int x = 0; x < 20; x++)
+            {
+                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+                Renderer::Submit(m_flatColorShader, m_squareVertexArray, transform);
+            }
+        }
 
         Renderer::Submit(m_shader, m_vertexArray);
+    }
+
+    virtual void OnImGuiRender() override
+    {
+        ImGui::Begin("Settings");
+        ImGui::ColorEdit3("Square Color", glm::value_ptr(m_squareColor));
+        ImGui::End();
     }
 
     void OnEvent(Grape::IEvent& event) override
@@ -160,7 +189,7 @@ public:
 private:
     std::shared_ptr<Grape::Shader> m_shader;
     std::shared_ptr<Grape::VertexArray> m_vertexArray;
-    std::shared_ptr<Grape::Shader> m_blueShader;
+    std::shared_ptr<Grape::Shader> m_flatColorShader;
     std::shared_ptr<Grape::VertexArray> m_squareVertexArray;
 
     Grape::OrthographicCamera m_camera;
@@ -170,6 +199,7 @@ private:
 
     float m_cameraRotation;
     float m_cameraRotationSpeed;
+    glm::vec3 m_squareColor = { 0.2f, 0.3f, 0.8f };
 };
 class SandboxApp : public Grape::IApplication
 {
@@ -177,7 +207,6 @@ public:
     SandboxApp()
     {
         PushLayer(new ExampleLayer());
-        PushOverlayer(new Grape::ImGuiLayer());
     }
 
     ~SandboxApp()

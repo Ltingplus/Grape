@@ -1,22 +1,18 @@
 #pragma once
 
 #include <string>
-#include "glm/glm.hpp"
 
 namespace Grape
 {
     class Shader
     {
     public:
-        Shader(const std::string& vertexSrc, const std::string& fragSrc);
-        ~Shader();
+        virtual ~Shader() = default;
 
-        void Bind() const;
-        void unBind() const;
+        static Shader* Create(const std::string& vertexSrc, const std::string& fragmentSrc);
 
-        void UpdateUniformMatrix(const std::string& name, const glm::mat4& mat);
+        virtual void Bind() const = 0;
+        virtual void unBind() const = 0;
 
-    private:
-        uint32_t m_rendererID;
     };
 }

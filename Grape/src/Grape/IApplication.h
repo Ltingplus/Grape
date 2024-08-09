@@ -5,6 +5,7 @@
 #include "Events/ApplicationEvent.h"
 #include "IWindow.h"
 #include "LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace Grape
 {
@@ -37,6 +38,7 @@ namespace Grape
         LayerStack m_layerStack;
 
         float m_lastFrameTime = 0.0f;
+        ImGuiLayer* m_imGuiLayer;
     };
 
     IApplication* CreateApplication();

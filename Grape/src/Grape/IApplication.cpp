@@ -23,6 +23,8 @@ namespace Grape
         s_instance = this;
         m_window->SetEventCallback(GP_BIND_EVENT_FN(IApplication::OnEvent));   
         
+        m_imGuiLayer = new ImGuiLayer();
+        PushOverlayer(m_imGuiLayer);
     }
 
     IApplication::~IApplication()
@@ -38,6 +40,11 @@ namespace Grape
             m_lastFrameTime = time;
             for (auto layer : m_layerStack)
                 layer->OnUpdate(timestep);
+
+            m_imGuiLayer->Begin();
+            for (auto layer : m_layerStack)
+                layer->OnImGuiRender();
+            m_imGuiLayer->End();
 
             m_window->OnUpdate();
         }
@@ -61,13 +68,11 @@ namespace Grape
     void IApplication::PushLayer(ILayer* layer)
     {
         m_layerStack.PushLayer(layer);
-        layer->OnAttach();
     }
 
     void IApplication::PushOverlayer(ILayer* layer)
     {
         m_layerStack.PushOverlayer(layer);
-        layer->OnAttach();
     }
 
     bool IApplication::OnWindowClose(WindowCloseEvent& e)

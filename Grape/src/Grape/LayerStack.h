@@ -21,6 +21,6 @@ namespace Grape
 
     private:
         std::vector<ILayer*> m_layers;
-        std::vector<ILayer*>::iterator m_layerItr;
+        unsigned int m_layerInsertIndex = 0;
     };
 }

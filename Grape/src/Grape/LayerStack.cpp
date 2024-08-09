@@ -5,7 +5,6 @@
 namespace Grape
 {
     LayerStack::LayerStack()
-        : m_layerItr(m_layers.begin())
     {
 
     }
@@ -16,32 +15,37 @@ namespace Grape
             delete layer;
     }
 
-    void LayerStack::PushLayer(ILayer* layer)
-    {
-        m_layerItr = m_layers.emplace(m_layerItr, layer);
-    }
-
     void LayerStack::PushOverlayer(ILayer* layer)
     {
         m_layers.emplace_back(layer);
-    }
-
-    void LayerStack::PopLayer(ILayer* layer)
-    {
-        auto it = std::find(m_layers.begin(), m_layers.end(), layer);
-        if (it != m_layers.end())
-        {
-            m_layers.erase(it);
-            m_layerItr--;
-        }
+        layer->OnAttach();
     }
 
     void LayerStack::PopOverlayer(ILayer* layer)
     {
-        auto it = std::find(m_layers.begin(), m_layers.end(), layer);
+        auto it = std::find(m_layers.begin() + m_layerInsertIndex, m_layers.end(), layer);
         if (it != m_layers.end())
         {
+            layer->OnDetach();
             m_layers.erase(it);
+        }
+    }
+
+    void LayerStack::PushLayer(ILayer* layer)
+    {
+        m_layers.emplace(m_layers.begin() + m_layerInsertIndex, layer);
+        m_layerInsertIndex++;
+        layer->OnAttach();
+    }
+
+    void LayerStack::PopLayer(ILayer* layer)
+    {
+        auto it = std::find(m_layers.begin(), m_layers.begin() + m_layerInsertIndex, layer);
+        if (it != m_layers.end())
+        {
+            layer->OnDetach();
+            m_layers.erase(it);
+            m_layerInsertIndex--;
         }
     }
 

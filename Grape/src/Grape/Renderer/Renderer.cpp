@@ -1,5 +1,6 @@
 #include "gppch.h"
 #include "Renderer.h"
+#include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Grape
 {
@@ -15,10 +16,11 @@ namespace Grape
         //todo
     }
 
-    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray)
+    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform)
     {
         shader->Bind();
-        shader->UpdateUniformMatrix("u_viewProjection", s_sceneData->ViewProjectionMatrix);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->UpdateUniformMatrix4("u_viewProjection", s_sceneData->ViewProjectionMatrix);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->UpdateUniformMatrix4("u_transform", transform);
 
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);
