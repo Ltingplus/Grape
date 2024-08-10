@@ -17,6 +17,7 @@ IncludeDir["GLFW"] = "Grape/thirdparty/GLFW/include"
 IncludeDir["Glad"] = "Grape/thirdparty/Glad/include"
 IncludeDir["ImGui"] = "Grape/thirdparty/imgui"
 IncludeDir["glm"] = "Grape/thirdparty/glm"
+IncludeDir["stb_image"] = "Grape/thirdparty/stb_image"
 
 include "Grape/thirdparty/GLFW"
 include "Grape/thirdparty/Glad"
@@ -39,7 +40,9 @@ project "Grape"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/thirdparty/glm/glm/**.hpp"
+		"%{prj.name}/thirdparty/glm/glm/**.hpp",
+		"%{prj.name}/thirdparty/stb_image/**.h",
+		"%{prj.name}/thirdparty/stb_image/**.cpp"
 	}
 
 	defines
@@ -55,7 +58,8 @@ project "Grape"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links

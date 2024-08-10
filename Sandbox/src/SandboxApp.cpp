@@ -28,7 +28,7 @@ public:
              0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
              0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
-        std::shared_ptr<VertexBuffer> vertexBuffer;
+        Grape::Ref<VertexBuffer> vertexBuffer;
         vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
         BufferLayout layout =
         {
@@ -39,7 +39,7 @@ public:
         m_vertexArray->AddVertexBuffer(vertexBuffer);
 
         unsigned int indices[3] = { 0, 1, 2 };
-        std::shared_ptr<IndexBuffer> indexBuffer;
+        Grape::Ref<IndexBuffer> indexBuffer;
         indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_vertexArray->SetIndexBuffer(indexBuffer);
         // shader
@@ -72,27 +72,28 @@ public:
                 color = v_color;
             }
         )";
-        m_shader.reset(Shader::Create(vertexSrc, fagSrc));
+        m_shader.reset(IShader::Create(vertexSrc, fagSrc));
 
         m_squareVertexArray.reset(VertexArray::Create());
-        float squareVertices[3 * 4] =
+        float squareVertices[5 * 4] =
         {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.5f,  0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+             0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
         };
-        std::shared_ptr<VertexBuffer> sqVertexBuffer;
+        Grape::Ref<VertexBuffer> sqVertexBuffer;
         sqVertexBuffer.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
         BufferLayout sqLayout =
         {
-            {ShaderDataType::Float3, "a_position"}
+            {ShaderDataType::Float3, "a_position"},
+            {ShaderDataType::Float2, "a_texCoord"}
         };
         sqVertexBuffer->SetLayout(sqLayout);
         m_squareVertexArray->AddVertexBuffer(sqVertexBuffer);
 
         unsigned int sqIndices[6] = { 0, 1, 2, 2, 3, 0 };
-        std::shared_ptr<IndexBuffer> sqIndexBuffer;
+        Grape::Ref<IndexBuffer> sqIndexBuffer;
         sqIndexBuffer.reset(IndexBuffer::Create(sqIndices, sizeof(sqIndices) / sizeof(uint32_t)));
         m_squareVertexArray->SetIndexBuffer(sqIndexBuffer);
         // shader
@@ -122,8 +123,44 @@ public:
                 color = vec4(u_color, 1.0f);
             }
         )";
-        m_flatColorShader.reset(Shader::Create(flatColorVertexSrc, flatColorFagSrc));
-    }
+        m_flatColorShader.reset(IShader::Create(flatColorVertexSrc, flatColorFagSrc));
+    
+        std::string textureShaderVertexSrc = R"(
+            #version 330 core
+            layout(location = 0) in vec3 a_position;
+            layout(location = 1) in vec2 a_texCoord;
+
+            uniform mat4 u_viewProjection;
+            uniform mat4 u_transform;
+
+            out vec2 v_texCoord;
+
+            void main()
+            {
+                v_texCoord = a_texCoord;
+                gl_Position = u_viewProjection * u_transform * vec4(a_position, 1.0);
+            }
+        )";
+        std::string textureShaderFagSrc = R"(
+            #version 330 core
+            layout(location = 0) out vec4 color;
+            in vec2 v_texCoord;
+
+            uniform sampler2D u_texture;
+
+            void main()
+            {
+                color = texture(u_texture, v_texCoord);
+            }
+        )";
+
+        m_textureShader.reset(Grape::IShader::Create(textureShaderVertexSrc, textureShaderFagSrc));
+        m_texture = Grape::ITexture2D::Create("assets/textures/Checkerboard.png");
+
+        std::dynamic_pointer_cast<Grape::OpenGLShader>(m_textureShader)->Bind();
+        std::dynamic_pointer_cast<Grape::OpenGLShader>(m_textureShader)->UploadUniformInt("u_texture", 0);
+
+}
 
     void OnUpdate(Timestep ts) override
     {
@@ -150,8 +187,8 @@ public:
 
         Renderer::BeginScene(m_camera);
 
-        std::dynamic_pointer_cast<Grape::OpenGLShader>(m_flatColorShader)->Bind();
-        std::dynamic_pointer_cast<Grape::OpenGLShader>(m_flatColorShader)->UploadUniformFloat3("u_color", m_squareColor);
+        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->Bind();
+        std::dynamic_pointer_cast<OpenGLShader>(m_flatColorShader)->UploadUniformFloat3("u_color", m_squareColor);
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -164,8 +201,11 @@ public:
                 Renderer::Submit(m_flatColorShader, m_squareVertexArray, transform);
             }
         }
+        m_texture->Bind();
+        Renderer::Submit(m_textureShader, m_squareVertexArray, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
-        Renderer::Submit(m_shader, m_vertexArray);
+        //Renderer::Submit(m_shader, m_vertexArray);
+        Renderer::EndScene();
     }
 
     virtual void OnImGuiRender() override
@@ -187,10 +227,12 @@ public:
     }
 
 private:
-    std::shared_ptr<Grape::Shader> m_shader;
-    std::shared_ptr<Grape::VertexArray> m_vertexArray;
-    std::shared_ptr<Grape::Shader> m_flatColorShader;
-    std::shared_ptr<Grape::VertexArray> m_squareVertexArray;
+    Grape::Ref<Grape::IShader> m_shader;
+    Grape::Ref<Grape::VertexArray> m_vertexArray;
+    Grape::Ref<Grape::IShader> m_flatColorShader;
+    Grape::Ref<Grape::IShader> m_textureShader;
+    Grape::Ref<Grape::VertexArray> m_squareVertexArray;
+    Grape::Ref<Grape::ITexture2D> m_texture;
 
     Grape::OrthographicCamera m_camera;
 

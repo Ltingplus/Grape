@@ -1,12 +1,12 @@
 #pragma once
-#include "Grape/Renderer/Shader.h"
+#include "Grape/Renderer/IShader.h"
 
 #include <string>
 #include "glm/glm.hpp"
 
 namespace Grape
 {
-    class OpenGLShader : public Shader
+    class OpenGLShader : public IShader
     {
     public:
         OpenGLShader(const std::string& vertexSrc, const std::string& fragSrc);

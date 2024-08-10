@@ -15,7 +15,8 @@
 
 #include "Grape/ImGui/ImGuiLayer.h"
 
-#include "Grape/Renderer/Shader.h"
+#include "Grape/Renderer/IShader.h"
+#include "Grape/Renderer/ITexture.h"
 #include "Grape/Renderer/Buffer.h"
 #include "Grape/Renderer/VertexArray.h"
 #include "Grape/Renderer/OrthographicCamera.h"

@@ -16,7 +16,7 @@ namespace Grape
         //todo
     }
 
-    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform)
+    void Renderer::Submit(const std::shared_ptr<IShader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform)
     {
         shader->Bind();
         std::dynamic_pointer_cast<OpenGLShader>(shader)->UpdateUniformMatrix4("u_viewProjection", s_sceneData->ViewProjectionMatrix);

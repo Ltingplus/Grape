@@ -1,6 +1,6 @@
 #include "gppch.h"
 
-#include "Shader.h"
+#include "IShader.h"
 
 #include "Renderer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
@@ -8,7 +8,7 @@
 namespace Grape
 {
 
-    Shader* Shader::Create(const std::string& vertexSrc, const std::string& fragmentSrc)
+    IShader* IShader::Create(const std::string& vertexSrc, const std::string& fragmentSrc)
     {
         switch (Renderer::GetAPI())
         {

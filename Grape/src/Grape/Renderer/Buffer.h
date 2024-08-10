@@ -12,16 +12,16 @@ namespace Grape
     {
         switch (type)
         {
-        case Grape::ShaderDataType::Float:        return 4;
+        case Grape::ShaderDataType::Float:         return 4;
         case Grape::ShaderDataType::Float2:        return 4 * 2;
         case Grape::ShaderDataType::Float3:        return 4 * 3;
         case Grape::ShaderDataType::Float4:        return 4 * 4;
-        case Grape::ShaderDataType::Int:        return 4;
-        case Grape::ShaderDataType::Int2:        return 4 * 2;
-        case Grape::ShaderDataType::Int3:        return 4 * 3;
-        case Grape::ShaderDataType::Int4:        return 4 * 4;
-        case Grape::ShaderDataType::Mat3:        return 4 * 3 * 3;
-        case Grape::ShaderDataType::Mat4:        return 4 * 4 * 4;        
+        case Grape::ShaderDataType::Int:           return 4;
+        case Grape::ShaderDataType::Int2:          return 4 * 2;
+        case Grape::ShaderDataType::Int3:          return 4 * 3;
+        case Grape::ShaderDataType::Int4:          return 4 * 4;
+        case Grape::ShaderDataType::Mat3:          return 4 * 3 * 3;
+        case Grape::ShaderDataType::Mat4:          return 4 * 4 * 4;        
         }
         GP_CORE_ASSERT(false, "Unknown ShaderDataType!");
         return 0;

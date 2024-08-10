@@ -4,12 +4,12 @@
 
 namespace Grape
 {
-    class Shader
+    class IShader
     {
     public:
-        virtual ~Shader() = default;
+        virtual ~IShader() = default;
 
-        static Shader* Create(const std::string& vertexSrc, const std::string& fragmentSrc);
+        static IShader* Create(const std::string& vertexSrc, const std::string& fragmentSrc);
 
         virtual void Bind() const = 0;
         virtual void unBind() const = 0;
