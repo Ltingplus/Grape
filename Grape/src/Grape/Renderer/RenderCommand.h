@@ -8,6 +8,10 @@ namespace Grape
     class RenderCommand
     {
     public:
+        static void Init()
+        {
+            s_rendererAPI->Init();
+        }
         static void Clear()
         {
             s_rendererAPI->Clear();

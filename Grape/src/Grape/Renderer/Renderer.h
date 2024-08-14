@@ -10,6 +10,7 @@ namespace Grape
     {
     public:
         static RendererAPI::Api GetAPI() { return RendererAPI::GetAPI(); }
+        static void Init();
         static void BeginScene(const OrthographicCamera& carema);
         static void EndScene();
 

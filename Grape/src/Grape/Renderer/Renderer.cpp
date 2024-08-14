@@ -6,6 +6,11 @@ namespace Grape
 {
     Renderer::SceneData* Renderer::s_sceneData = new Renderer::SceneData;
 
+    void Renderer::Init()
+    {
+        RenderCommand::Init();
+    }
+
     void Renderer::BeginScene(const OrthographicCamera& carema)
     {
         s_sceneData->ViewProjectionMatrix = carema.GetViewProjectionMatrix();

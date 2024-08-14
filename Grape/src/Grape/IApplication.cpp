@@ -9,6 +9,7 @@
 #include "glad/glad.h"
 #include "Timestep.h"
 #include "GLFW/glfw3.h"
+#include "Renderer/Renderer.h"
 
 
 namespace Grape
@@ -23,6 +24,8 @@ namespace Grape
         s_instance = this;
         m_window->SetEventCallback(GP_BIND_EVENT_FN(IApplication::OnEvent));   
         
+        Renderer::Init();
+
         m_imGuiLayer = new ImGuiLayer();
         PushOverlayer(m_imGuiLayer);
     }
