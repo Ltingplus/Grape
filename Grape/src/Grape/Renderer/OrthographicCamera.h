@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/detail/type_mat4x4.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace Grape
 {
@@ -20,6 +21,12 @@ namespace Grape
         {
             m_rotation = rotation;
             RecalculateViewMatrix();
+        }
+
+        void SetProjection(float left, float right, float bottom, float top)
+        {
+            m_projectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+            m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
         }
 
         const glm::mat4& GetProjectionMatrix() const { return m_projectionMatrix; }

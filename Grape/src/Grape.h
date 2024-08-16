@@ -19,4 +19,5 @@
 #include "Grape/Renderer/ITexture.h"
 #include "Grape/Renderer/Buffer.h"
 #include "Grape/Renderer/VertexArray.h"
-#include "Grape/Renderer/OrthographicCamera.h"
+
+#include "Grape/OrthographicCameraController.h"

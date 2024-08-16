@@ -4,14 +4,19 @@
 #include <string>
 #include "glm/glm.hpp"
 
+// TODO: REMOVE!
+typedef unsigned int GLenum;
+
 namespace Grape
 {
     class OpenGLShader : public IShader
     {
     public:
-        OpenGLShader(const std::string& vertexSrc, const std::string& fragSrc);
+        OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragSrc);
+        OpenGLShader(const std::string& filePath);
         virtual ~OpenGLShader();
 
+        const std::string& GetName() const override { return m_name; }
         void Bind() const override;
         void unBind() const override;
 
@@ -26,7 +31,13 @@ namespace Grape
         void UpdateUniformMatrix4(const std::string& name, const glm::mat4& mat);
 
     private:
+        std::string ReadFile(const std::string& filePath);
+        std::unordered_map<GLenum, std::string> PreProcess(const std::string& src);
+        void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
+
+    private:
         uint32_t m_rendererID;
+        std::string m_name;
     };
 }
 
