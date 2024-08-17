@@ -55,6 +55,26 @@ namespace Grape
         glUseProgram(0);
     }
 
+    void OpenGLShader::SetInt(const std::string& name, int value)
+    {
+        UploadUniformInt(name, value);
+    }
+
+    void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+    {
+        UploadUniformFloat3(name, value);
+    }
+
+    void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+    {
+        UploadUniformFloat4(name, value);
+    }
+
+    void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+    {
+        UploadUniformMatrix4(name, value);
+    }
+
     void OpenGLShader::UploadUniformInt(const std::string& name, const int& value)
     {
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
@@ -87,7 +107,13 @@ namespace Grape
         glUniform4f(location, value.x, value.y, value.z, value.w);
     }
 
-    void OpenGLShader::UpdateUniformMatrix4(const std::string& name, const glm::mat4& mat)
+    void OpenGLShader::UploadUniformMatrix3(const std::string& name, const glm::mat3& mat)
+    {
+        GLint location = glGetUniformLocation(m_rendererID, name.c_str());
+        glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+    }
+
+    void OpenGLShader::UploadUniformMatrix4(const std::string& name, const glm::mat4& mat)
     {
         GLint location = glGetUniformLocation(m_rendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));

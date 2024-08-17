@@ -20,6 +20,11 @@ namespace Grape
         void Bind() const override;
         void unBind() const override;
 
+        void SetInt(const std::string& name, int value) override;
+        void SetFloat3(const std::string& name, const glm::vec3& value) override;
+        void SetFloat4(const std::string& name, const glm::vec4& value) override;
+        void SetMat4(const std::string& name, const glm::mat4& value) override;
+
         void UploadUniformInt(const std::string& name, const int& value);
 
         void UploadUniformFloat(const std::string& name, const float& value);
@@ -27,8 +32,8 @@ namespace Grape
         void UploadUniformFloat3(const std::string& name, const glm::vec3& value);
         void UploadUniformFloat4(const std::string& name, const glm::vec4& value);
 
-        void UpdateUniformMatrix3(const std::string& name, const glm::mat3& mat);
-        void UpdateUniformMatrix4(const std::string& name, const glm::mat4& mat);
+        void UploadUniformMatrix3(const std::string& name, const glm::mat3& mat);
+        void UploadUniformMatrix4(const std::string& name, const glm::mat4& mat);
 
     private:
         std::string ReadFile(const std::string& filePath);

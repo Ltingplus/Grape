@@ -7,6 +7,9 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "Platform/OpenGL/OpenGLShader.h"
 
+#include "Sandbox2D.h"
+#include "Grape/Core/EntryPoint.h"
+
 using namespace Grape;
 
 class ExampleLayer : public Grape::ILayer
@@ -17,7 +20,7 @@ public:
         , m_cameraController(1280.0f/720.0f)
     {
         // ªÊ÷∆»˝Ω«–Œ≤‚ ‘
-        m_vertexArray.reset(VertexArray::Create());
+        m_vertexArray= VertexArray::Create();
         float vertices[3 * 7] =
         {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -70,7 +73,7 @@ public:
         )";
         m_shader = IShader::Create("VertexPosColor", vertexSrc, fagSrc);
 
-        m_squareVertexArray.reset(VertexArray::Create());
+        m_squareVertexArray = VertexArray::Create();
         float squareVertices[5 * 4] =
         {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -187,7 +190,8 @@ class SandboxApp : public Grape::IApplication
 public:
     SandboxApp()
     {
-        PushLayer(new ExampleLayer());
+        //PushLayer(new ExampleLayer());
+        PushLayer(new Sandbox2D());
     }
 
     ~SandboxApp()

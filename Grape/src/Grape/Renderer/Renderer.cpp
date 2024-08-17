@@ -1,6 +1,7 @@
 #include "gppch.h"
 #include "Renderer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+
+#include "Renderer2D.h"
 
 namespace Grape
 {
@@ -9,6 +10,7 @@ namespace Grape
     void Renderer::Init()
     {
         RenderCommand::Init();
+        Renderer2D::Init();
     }
 
     void Renderer::BeginScene(const OrthographicCamera& carema)
@@ -29,8 +31,8 @@ namespace Grape
     void Renderer::Submit(const std::shared_ptr<IShader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform)
     {
         shader->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(shader)->UpdateUniformMatrix4("u_viewProjection", s_sceneData->ViewProjectionMatrix);
-        std::dynamic_pointer_cast<OpenGLShader>(shader)->UpdateUniformMatrix4("u_transform", transform);
+        shader->SetMat4("u_viewProjection", s_sceneData->ViewProjectionMatrix);
+        shader->SetMat4("u_transform", transform);
 
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);
