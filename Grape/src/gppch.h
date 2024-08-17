@@ -14,7 +14,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Grape/Log.h"
+#include "Grape/Core/Log.h"
 
 #ifdef GP_PLATFORM_WINDOWS
 #include <Windows.h>

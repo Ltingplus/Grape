@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core.h"
-#include "Events/IEvent.h"
+#include "Grape/Events/IEvent.h"
 #include "Timestep.h"
 
 namespace Grape

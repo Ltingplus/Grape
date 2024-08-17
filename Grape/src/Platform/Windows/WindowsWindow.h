@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Grape/IWindow.h"
+#include "Grape/Core/IWindow.h"
 
 #include <GLFW/glfw3.h>
 #include "Grape/Renderer/IGraphicsContext.h"

@@ -1,7 +1,7 @@
 #include "gppch.h"
 #include "WindowsInput.h"
 
-#include "Grape/IApplication.h"
+#include "Grape/Core/IApplication.h"
 #include "GLFW/glfw3.h"
 
 namespace Grape

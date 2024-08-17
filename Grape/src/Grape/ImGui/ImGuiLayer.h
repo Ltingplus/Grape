@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Grape/ILayer.h"
+#include "Grape/Core/ILayer.h"
 #include "Grape/Events/MouseEvent.h"
 #include "Grape/Events/KeyEvent.h"
 #include "Grape/Events/ApplicationEvent.h"

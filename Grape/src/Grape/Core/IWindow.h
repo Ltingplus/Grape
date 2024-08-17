@@ -2,7 +2,7 @@
 
 #include "gppch.h"
 
-#include "Grape/Core.h"
+#include "Grape/Core/Core.h"
 #include "Grape/Events/IEvent.h"
 
 namespace Grape

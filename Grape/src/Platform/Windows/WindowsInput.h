@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Grape/IInput.h"
+#include "Grape/Core/IInput.h"
 
 namespace Grape
 {

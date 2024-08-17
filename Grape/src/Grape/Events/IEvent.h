@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Grape/Core.h"
+#include "Grape/Core/Core.h"
 
 #include "gppch.h"
 

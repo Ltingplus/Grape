@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Core.h"
-#include "Events/IEvent.h"
-#include "Events/ApplicationEvent.h"
+#include "Grape/Events/IEvent.h"
+#include "Grape/Events/ApplicationEvent.h"
 #include "IWindow.h"
 #include "LayerStack.h"
-#include "ImGui/ImGuiLayer.h"
+#include "Grape/ImGui/ImGuiLayer.h"
 
 namespace Grape
 {
@@ -28,6 +28,7 @@ namespace Grape
 
     private:
         bool OnWindowClose(WindowCloseEvent& e);
+        bool OnWindowResize(WindowResizeEvent& e);
 
     private:
         static IApplication* s_instance;
@@ -35,6 +36,7 @@ namespace Grape
     private:
         std::unique_ptr<IWindow> m_window;
         bool m_running = true;
+        bool m_minimized = false;
         LayerStack m_layerStack;
 
         float m_lastFrameTime = 0.0f;

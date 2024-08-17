@@ -24,6 +24,10 @@ namespace Grape
         {
             s_rendererAPI->DrawIndexed(vertexArray);
         }
+        static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t hight)
+        {
+            s_rendererAPI->SetViewport(x, y, width, hight);
+        }
 
     private:
         static RendererAPI* s_rendererAPI;

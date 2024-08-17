@@ -1,7 +1,7 @@
 #include "gppch.h"
 #include "OrthographicCameraController.h"
-#include "Grape/IInput.h"
-#include "Grape/KeyCodes.h"
+#include "Grape/Core/IInput.h"
+#include "Grape/Core/KeyCodes.h"
 
 namespace Grape
 {

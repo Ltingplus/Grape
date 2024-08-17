@@ -4,12 +4,12 @@
 #include "IApplication.h"
 
 #include "Grape/Events/ApplicationEvent.h"
-#include "Grape/Log.h"
+#include "Grape/Core/Log.h"
 
 #include "glad/glad.h"
 #include "Timestep.h"
 #include "GLFW/glfw3.h"
-#include "Renderer/Renderer.h"
+#include "Grape/Renderer/Renderer.h"
 
 
 namespace Grape
@@ -41,8 +41,11 @@ namespace Grape
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_lastFrameTime;
             m_lastFrameTime = time;
-            for (auto layer : m_layerStack)
-                layer->OnUpdate(timestep);
+            if(!m_minimized)
+            {
+                for (auto layer : m_layerStack)
+                    layer->OnUpdate(timestep);
+            }
 
             m_imGuiLayer->Begin();
             for (auto layer : m_layerStack)
@@ -57,6 +60,7 @@ namespace Grape
     {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(GP_BIND_EVENT_FN(IApplication::OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(GP_BIND_EVENT_FN(IApplication::OnWindowResize));
 
         //GP_CORE_TRACE("{0}", e.ToString());
 
@@ -82,6 +86,18 @@ namespace Grape
     {
         m_running = false;
         return true;
+    }
+
+    bool IApplication::OnWindowResize(WindowResizeEvent& e)
+    {
+        if (e.GetWidth() == 0 || e.GetHeight() == 0)
+        {
+            m_minimized = true;
+            return false;
+        }
+        m_minimized = false;
+        Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+        return false;
     }
 
 }
