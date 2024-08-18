@@ -18,4 +18,16 @@ namespace Grape
         return nullptr;
     }
 
+    Grape::Ref<Grape::ITexture2D> ITexture2D::Create(uint32_t width, uint32_t height)
+    {
+        switch (Renderer::GetAPI())
+        {
+        case RendererAPI::Api::None:    GP_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+        case RendererAPI::Api::OpenGL:  return std::make_shared<OpenGLTexture>(width, height);
+        }
+
+        GP_CORE_ASSERT(false, "Unknown RendererAPI!");
+        return nullptr;
+    }
+
 }
