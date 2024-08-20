@@ -9,6 +9,7 @@
 
 #include "Sandbox2D.h"
 #include "Grape/Core/EntryPoint.h"
+#include "RayTracing.h"
 
 using namespace Grape;
 
@@ -191,7 +192,8 @@ public:
     SandboxApp()
     {
         //PushLayer(new ExampleLayer());
-        PushLayer(new Sandbox2D());
+        //PushLayer(new Sandbox2D());
+        PushLayer(new RayTracingLayer());
     }
 
     ~SandboxApp()
