@@ -39,40 +39,53 @@ void RayTracingRenderer::OnResize(uint32_t width, uint32_t height)
     m_imageData = new uint32_t[width * height];
 }
 
-void RayTracingRenderer::Render()
+void RayTracingRenderer::Render(const PerspectiveCamera& camera)
 {
+    Ray ray;
+    ray.Origin = camera.GetPostion();
     for (uint32_t y = 0; y < m_finalImage->GetHeight(); y++)
     {
         for (uint32_t x = 0; x < m_finalImage->GetWidth(); x++)
         {
-            glm::vec2 coord = { (float)x / (float)m_finalImage->GetWidth(), (float)y / (float)m_finalImage->GetHeight() };
-            coord = coord * 2.0f - 1.0f; // -1 -> 1
-            auto color = ProcessPixel(coord);
+            if (x > 848 && y > 273)
+            {
+                ray.Direction = camera.GetRayDirections()[x + y * m_finalImage->GetWidth()];
+
+            }
+            else
+                ray.Direction = camera.GetRayDirections()[x + y * m_finalImage->GetWidth()];
+
+            auto color = TraceRay(ray);
             color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
             m_imageData[x + y * m_finalImage->GetWidth()] = Utils::ConvertToRGBA(color);
         }
     }
+    for (uint32_t x = 0; x < m_finalImage->GetWidth(); x++)
+        m_imageData[x] = Utils::ConvertToRGBA(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+    for (uint32_t y = 0; y < m_finalImage->GetHeight(); y++)
+        m_imageData[y * m_finalImage->GetWidth()] = Utils::ConvertToRGBA(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+
 
     m_finalImage->SetData(m_imageData);
 }
 
-glm::vec4 RayTracingRenderer::ProcessPixel(glm::vec2 coord)
+glm::vec4 RayTracingRenderer::TraceRay(const Ray& ray)
 {
-    glm::vec3 rayOrigin(0.0f, 0.0f, 1.0f);
-    glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
-    float radius = 0.5f;
+    float radius = 0.5f;//circle origin: (0,0)
     //rayDirection = glm::normalize(rayDirection);
 
-    // (bx^2 + by^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
+    // ray: x=ax + bx*t; y=ay+by*t
+    // circle: x^2 + y^2 - r^2 = 0
+    // (bx^2 + by^2)t^2 + (2(ax*bx + ay*by))t + (ax^2 + ay^2 - r^2) = 0
     // where
     // a = ray origin
     // b = ray direction
     // r = radius
     // t = hit distance
 
-    float a = glm::dot(rayDirection, rayDirection);
-    float b = 2.0f * glm::dot(rayOrigin, rayDirection);
-    float c = glm::dot(rayOrigin, rayOrigin) - radius * radius;
+    float a = glm::dot(ray.Direction, ray.Direction);
+    float b = 2.0f * glm::dot(ray.Origin, ray.Direction);
+    float c = glm::dot(ray.Origin, ray.Origin) - radius * radius;
 
     // Quadratic forumula discriminant:
     // b^2 - 4ac
@@ -82,30 +95,34 @@ glm::vec4 RayTracingRenderer::ProcessPixel(glm::vec2 coord)
         return glm::vec4(0, 0, 0, 1);
 
     float closestT = (-b - glm::sqrt(discriminant) / (2.0f * a));// first hit distance
-    glm::vec3 hitPoint = rayOrigin + rayDirection * closestT;
+    glm::vec3 hitPoint = ray.Origin + ray.Direction * closestT;
     glm::vec3 normal = glm::normalize(hitPoint);
     glm::vec3 lightDir = glm::normalize((glm::vec3(-1, -1, -1)));
-    float linghtIdensity = glm::max(glm::dot(normal, -lightDir), 0.0f);// cos(sita)
+    float lightIntensity = glm::max(glm::dot(normal, -lightDir), 0.0f);// cos(sita)
 
     glm::vec3 sphereColor(1, 0, 1);
-    sphereColor *= linghtIdensity;
-
+    sphereColor *= lightIntensity;
+    if (lightIntensity != 0.0)
+    {
+        return glm::vec4(sphereColor, 1.0f);
+    }
     return glm::vec4(sphereColor, 1.0f);
 }
 
 void RayTracingLayer::OnUpdate(Timestep ts)
 {
+    m_camera.OnUpdate(ts);
 }
 
 void RayTracingLayer::OnImGuiRender()
 {
-    ImGui::Begin("Settings");
+    /*ImGui::Begin("Settings");
     ImGui::Text("Last render: %.3fms", m_lastRenderTime);
     if (ImGui::Button("Render"))
     {
         Render();
     }
-    ImGui::End();
+    ImGui::End();*/
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("Viewport");
@@ -115,7 +132,7 @@ void RayTracingLayer::OnImGuiRender()
 
     auto image = m_renderer.GetFinalImage();
     if (image)
-        ImGui::Image((ImTextureID)(intptr_t)image->GetTextureID(), ImVec2(image->GetWidth(), image->GetHeight()));
+        ImGui::Image((ImTextureID)(intptr_t)image->GetTextureID(), ImVec2(image->GetWidth(), image->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));
 
     ImGui::End();
     ImGui::PopStyleVar();
@@ -128,7 +145,8 @@ void RayTracingLayer::Render()
     //Timer timer;
 
     m_renderer.OnResize(m_viewportWidth, m_viewportHeight);
-    m_renderer.Render();
+    m_camera.OnResize(m_viewportWidth, m_viewportHeight);
+    m_renderer.Render(m_camera);
 
     //m_LastRenderTime = timer.ElapsedMillis();
 }
