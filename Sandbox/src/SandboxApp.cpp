@@ -9,7 +9,7 @@
 
 #include "Sandbox2D.h"
 #include "Grape/Core/EntryPoint.h"
-#include "RayTracing.h"
+#include "RayTracing/RayTracing.h"
 
 using namespace Grape;
 

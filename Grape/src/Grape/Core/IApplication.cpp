@@ -11,9 +11,8 @@
 #include "GLFW/glfw3.h"
 #include "Grape/Renderer/Renderer.h"
 
-
 namespace Grape
-{    
+{
 
     IApplication* IApplication::s_instance = nullptr;
 
@@ -22,8 +21,8 @@ namespace Grape
     {
         GP_CORE_ASSERT(!s_instance, "Application already exists!");
         s_instance = this;
-        m_window->SetEventCallback(GP_BIND_EVENT_FN(IApplication::OnEvent));   
-        
+        m_window->SetEventCallback(GP_BIND_EVENT_FN(IApplication::OnEvent));
+
         Renderer::Init();
 
         m_imGuiLayer = new ImGuiLayer();
@@ -41,7 +40,7 @@ namespace Grape
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_lastFrameTime;
             m_lastFrameTime = time;
-            if(!m_minimized)
+            if (!m_minimized)
             {
                 for (auto layer : m_layerStack)
                     layer->OnUpdate(timestep);
@@ -54,6 +53,7 @@ namespace Grape
 
             m_window->OnUpdate();
         }
+
     }
 
     void IApplication::OnEvent(IEvent& e)
@@ -67,7 +67,7 @@ namespace Grape
         for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
         {
             (*--it)->OnEvent(e);
-            if(e.IsHandled())
+            if (e.IsHandled())
                 break;
         }
     }
