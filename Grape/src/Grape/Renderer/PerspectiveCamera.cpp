@@ -120,11 +120,14 @@ namespace Grape
             for (uint32_t x = 0; x < m_viewportWidth; x++)
             {
                 glm::vec2 coord = { (float)x / (float)m_viewportWidth, (float)y / (float)m_viewportHeight };
-                coord = coord * 2.0f - 1.0f; // -1 -> 1
+                coord = coord * 2.0f - 1.0f; // [-1, 1]
+                glm::vec4 clipCoord = glm::vec4(coord.x, coord.y, 1, 1);// 屏幕空间坐标转裁剪空间坐标
 
-                glm::vec4 target = m_inverseProjection * glm::vec4(coord.x, coord.y, 1, 1);
-                glm::vec3 rayDirection = glm::vec3(m_inverseView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0)); // World space
-                m_rayDirections[x + y * m_viewportWidth] = rayDirection;
+                glm::vec4 worldCoord = m_inverseView * m_inverseProjection * clipCoord;
+                glm::vec3 worldPos = glm::vec3(worldCoord) / worldCoord.w;//归一化齐次坐标
+                //glm::vec4 target = m_inverseProjection * glm::vec4(coord.x, coord.y, 1, 1);
+                //glm::vec3 rayDirection = glm::vec3(m_inverseView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0)); // World space
+                m_rayDirections[x + y * m_viewportWidth] = glm::normalize(worldPos);
             }
         }
     }
