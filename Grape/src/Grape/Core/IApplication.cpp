@@ -7,7 +7,7 @@
 #include "Grape/Core/Log.h"
 
 #include "glad/glad.h"
-#include "Timestep.h"
+#include "Grape/Utils/Timestep.h"
 #include "GLFW/glfw3.h"
 #include "Grape/Renderer/Renderer.h"
 

@@ -12,7 +12,7 @@
 #include "Grape/Core/KeyCodes.h"
 #include "Grape/Core/MouseButtonCodes.h"
 
-#include "Grape/Core/Timestep.h"
+#include "Grape/Utils/Timestep.h"
 
 #include "Grape/ImGui/ImGuiLayer.h"
 

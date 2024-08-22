@@ -3,6 +3,7 @@
 #include "RayTracing.h"
 
 #include "glm/gtc/type_ptr.hpp"
+#include "Grape/Utils/Random.h"
 
 namespace Utils 
 {
@@ -78,7 +79,7 @@ glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
         RayTracingRenderer::HitPayload payload = TraceRay(ray);
         if (payload.HitDistance < 0.0f)
         {
-            glm::vec3 skyColor = glm::vec3(0.0f, 0.0f, 0.0f);
+            glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
             color += skyColor * multiplier;
             break;
         }
@@ -86,14 +87,15 @@ glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
         float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f);// cos(sita)
 
         const Sphere& sphere = m_activeScene->Spheres[payload.ObjectIndex];
-        glm::vec3 sphereColor = sphere.Albedo;
+        const Material& mat = m_activeScene->Materials[sphere.MaterialIndex];
+        glm::vec3 sphereColor = mat.Albedo;
         sphereColor *= lightIntensity;
         color += sphereColor * multiplier;
-        multiplier *= 0.7f;
+        multiplier *= 0.5f;
 
         // 更新反射光线
         ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
-        ray.Direction = glm::reflect(ray.Direction, payload.WorldNormal);
+        ray.Direction = glm::reflect(ray.Direction, payload.WorldNormal + mat.Roughness * Random::Vec3(-0.5f, 0.5f));
     }
 
     return glm::vec4(color, 1.0f);
@@ -131,7 +133,7 @@ RayTracingRenderer::HitPayload RayTracingRenderer::TraceRay(const Ray& ray)
         if (closestT > 0.0f && closestT < hitDistance)
         {
             hitDistance = closestT;
-            closestIndex = i;
+            closestIndex = (int)i;
         }
     }
     if (closestIndex < 0)
@@ -167,17 +169,27 @@ RayTracingLayer::RayTracingLayer()
     , m_camera(45.0f, 0.1f, 100.0f, glm::vec3(0, 0, 3))
 {
     {
+        Material& mat = m_scene.Materials.emplace_back();
+        mat.Albedo = { 1.0f, 0.0f, 1.0f };
+        mat.Roughness = 0.0f;
+    }
+    {
+        Material& mat = m_scene.Materials.emplace_back();
+        mat.Albedo = { 0.2f, 0.3f, 1.0f };
+        mat.Roughness = 0.1f;
+    }
+    {
         Sphere sphere;
         sphere.Position = { 0.0f, 0.0f, 0.0f };
         sphere.Radius = 0.5f;
-        sphere.Albedo = { 1.0f, 0.0f, 1.0f };
+        sphere.MaterialIndex = 0;
         m_scene.Spheres.emplace_back(sphere);
     }
     {
         Sphere sphere;
-        sphere.Position = { 1.0f, 0.0f, -5.0f };
-        sphere.Radius = 1.5f;
-        sphere.Albedo = { 0.2f, 0.3f, 1.0f };
+        sphere.Position = { 0.0f, -101.0f, 0.0f };
+        sphere.Radius = 100.0f;
+        sphere.MaterialIndex = 1;
         m_scene.Spheres.emplace_back(sphere);
     }
 }
@@ -204,23 +216,30 @@ void RayTracingLayer::OnImGuiRender()
 
     for (size_t i = 0; i < m_scene.Spheres.size(); i++)
     {
-        ImGui::PushID(i);
-
+        ImGui::PushID((int)i);
         Sphere& sphere = m_scene.Spheres[i];
         ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
         ImGui::DragFloat("Radius", &sphere.Radius, 0.1f);
-        ImGui::ColorEdit3("Albedo", glm::value_ptr(sphere.Albedo));
-
+        ImGui::DragInt("Material", &sphere.MaterialIndex, 1.0f, 0, (int)m_scene.Materials.size() - 1);
         ImGui::Separator();
-
+        ImGui::PopID();
+    }
+    for (size_t i = 0; i < m_scene.Materials.size(); i++)
+    {
+        ImGui::PushID((int)i);
+        Material& material = m_scene.Materials[i];
+        ImGui::ColorEdit3("Albedo", glm::value_ptr(material.Albedo));
+        ImGui::DragFloat("Roughness", &material.Roughness, 0.05f, 0.0f, 1.0f);
+        ImGui::DragFloat("Metallic", &material.Metallic, 0.05f, 0.0f, 1.0f);
+        ImGui::Separator();
         ImGui::PopID();
     }
     ImGui::End();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("Viewport");
-    m_viewportWidth = ImGui::GetContentRegionAvail().x;
-    m_viewportHeight = ImGui::GetContentRegionAvail().y;
+    m_viewportWidth = (int)ImGui::GetContentRegionAvail().x;
+    m_viewportHeight = (int)ImGui::GetContentRegionAvail().y;
     auto image = m_renderer.GetFinalImage();
     if (image)
         ImGui::Image((ImTextureID)(intptr_t)image->GetTextureID(), ImVec2(image->GetWidth(), image->GetHeight()), ImVec2(0, 1), ImVec2(1, 0));

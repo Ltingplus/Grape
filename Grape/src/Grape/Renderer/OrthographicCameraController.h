@@ -1,5 +1,5 @@
 #pragma once
-#include "Grape/Core/Timestep.h"
+#include "Grape/Utils/Timestep.h"
 
 #include "Grape/Renderer/OrthographicCamera.h"
 #include "Grape/Events/MouseEvent.h"
