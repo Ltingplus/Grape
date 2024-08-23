@@ -20,12 +20,21 @@ struct Ray
 class RayTracingRenderer
 {
 public:
+    struct Settings
+    {
+        bool Accumulate = true;
+    };
+
+public:
     RayTracingRenderer() = default;
 
     void OnResize(uint32_t width, uint32_t height);
     void Render(const Scene& scene, const PerspectiveCamera& camera);
 
     Ref<IImage> GetFinalImage() const { return m_finalImage; }
+
+    void ResetFrameIndex() { m_frameIndex = 1; }
+    Settings& GetSettings() { return m_settings; }
 
 private:
     struct HitPayload
@@ -45,6 +54,9 @@ private:
 private:
     Ref<IImage> m_finalImage;
     uint32_t* m_imageData = nullptr;
+    glm::vec4* m_accumulationData = nullptr;
+    int m_frameIndex = 1;
+    Settings m_settings;
 
     const PerspectiveCamera* m_activeCamera = nullptr;
     const Scene* m_activeScene = nullptr;

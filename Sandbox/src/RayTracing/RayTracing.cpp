@@ -40,26 +40,39 @@ void RayTracingRenderer::OnResize(uint32_t width, uint32_t height)
 
     delete[] m_imageData;
     m_imageData = new uint32_t[width * height];
+    delete[] m_accumulationData;
+    m_accumulationData = new glm::vec4[width * height];
 }
 
 void RayTracingRenderer::Render(const Scene& scene, const PerspectiveCamera& camera)
 {
     m_activeCamera = &camera;
     m_activeScene = &scene;
+    if (m_frameIndex == 1)
+        memset(m_accumulationData, 0, m_finalImage->GetWidth() * m_finalImage->GetHeight() * sizeof(glm::vec4));
     for (uint32_t y = 0; y < m_finalImage->GetHeight(); y++)
     {
         for (uint32_t x = 0; x < m_finalImage->GetWidth(); x++)
         {
             auto color = PerPixel(x, y);
-            color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
+            if(m_settings.Accumulate)
+            {
+                m_accumulationData[x + y * m_finalImage->GetWidth()] += color;
+
+                auto accumulationColor = m_accumulationData[x + y * m_finalImage->GetWidth()];
+                accumulationColor /= (float)m_frameIndex;
+                color = glm::clamp(accumulationColor, glm::vec4(0.0f), glm::vec4(1.0f));
+            }
+            else
+                color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
+
             m_imageData[x + y * m_finalImage->GetWidth()] = Utils::ConvertToRGBA(color);
         }
     }
-    for (uint32_t x = 0; x < m_finalImage->GetWidth(); x++)
-        m_imageData[x] = Utils::ConvertToRGBA(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-    for (uint32_t y = 0; y < m_finalImage->GetHeight(); y++)
-        m_imageData[y * m_finalImage->GetWidth()] = Utils::ConvertToRGBA(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-
+    if (m_settings.Accumulate)
+        ++m_frameIndex;
+    else
+        m_frameIndex = 1;
 
     m_finalImage->SetData(m_imageData);
 }
@@ -196,7 +209,8 @@ RayTracingLayer::RayTracingLayer()
 
 void RayTracingLayer::OnUpdate(Timestep ts)
 {
-    m_camera.OnUpdate(ts);
+    if (m_camera.OnUpdate(ts))
+        m_renderer.ResetFrameIndex();
 }
 
 void RayTracingLayer::OnImGuiRender()
@@ -207,6 +221,10 @@ void RayTracingLayer::OnImGuiRender()
     {
         Render();
     }
+    ImGui::Checkbox("Accumulate", &m_renderer.GetSettings().Accumulate);
+
+    if (ImGui::Button("Reset"))
+        m_renderer.ResetFrameIndex();
     ImGui::End();
 
     ImGui::Begin("Scene");
@@ -218,6 +236,7 @@ void RayTracingLayer::OnImGuiRender()
     {
         ImGui::PushID((int)i);
         Sphere& sphere = m_scene.Spheres[i];
+        bool isChanged = false;
         ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
         ImGui::DragFloat("Radius", &sphere.Radius, 0.1f);
         ImGui::DragInt("Material", &sphere.MaterialIndex, 1.0f, 0, (int)m_scene.Materials.size() - 1);

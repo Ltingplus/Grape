@@ -21,14 +21,14 @@ namespace Grape
         m_forwardDirection = glm::vec3(0, 0, -1);
     }
 
-    void PerspectiveCamera::OnUpdate(float ts)
+    bool PerspectiveCamera::OnUpdate(float ts)
     {
         glm::vec2 mousePos{ IInput::GetMousePosition().first, IInput::GetMousePosition().second };
         glm::vec2 delta = (mousePos - m_lastMousePosition) * 0.002f;
         m_lastMousePosition = mousePos;
 
         if (!IInput::IsMouseButtonPressed((int)MouseButton::Right))
-            return;
+            return false;
 
         bool isMoved = false;
 
@@ -87,6 +87,7 @@ namespace Grape
             RecalculateView();
             RecalculateRayDirections();
         }
+        return isMoved;
     }
 
     void PerspectiveCamera::OnResize(uint32_t width, uint32_t height)

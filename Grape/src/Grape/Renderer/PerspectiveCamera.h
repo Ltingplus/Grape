@@ -9,7 +9,7 @@ namespace Grape
     public:
         PerspectiveCamera(float verticalFov, float nearClip, float farClip, const glm::vec3& position);
 
-        void OnUpdate(float ts);
+        bool OnUpdate(float ts);
         void OnResize(uint32_t width, uint32_t height);
 
         const glm::mat4& GetProjection() const { return m_projection; }
@@ -44,7 +44,7 @@ namespace Grape
 
         std::vector<glm::vec3> m_rayDirections;
 
-        glm::vec2 m_lastMousePosition{0.0f, 0.0f};
+        glm::vec2 m_lastMousePosition{ 0.0f, 0.0f };
 
         uint32_t m_viewportWidth = 0;
         uint32_t m_viewportHeight = 0;
