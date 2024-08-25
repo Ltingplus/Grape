@@ -84,31 +84,33 @@ glm::vec4 RayTracingRenderer::PerPixel(uint32_t x, uint32_t y)
     ray.Direction = m_activeCamera->GetRayDirections()[x + y * m_finalImage->GetWidth()];
 
     glm::vec3 color(0.0f);
-    float multiplier = 1.0f;
+    glm::vec3 contribution(1.0f);
 
-    int bounces = 2;
+    int bounces = 5;
     for (int i = 0; i < bounces; ++i)
     {
         RayTracingRenderer::HitPayload payload = TraceRay(ray);
         if (payload.HitDistance < 0.0f)
         {
             glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
-            color += skyColor * multiplier;
+            color += skyColor * contribution;
             break;
         }
-        glm::vec3 lightDir = glm::normalize(m_activeScene->LightDir);
-        float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f);// cos(sita)
+        //glm::vec3 lightDir = glm::normalize(m_activeScene->LightDir);
+        //float lightIntensity = glm::max(glm::dot(payload.WorldNormal, -lightDir), 0.0f);// cos(sita)
 
         const Sphere& sphere = m_activeScene->Spheres[payload.ObjectIndex];
         const Material& mat = m_activeScene->Materials[sphere.MaterialIndex];
         glm::vec3 sphereColor = mat.Albedo;
-        sphereColor *= lightIntensity;
-        color += sphereColor * multiplier;
-        multiplier *= 0.5f;
+        //sphereColor *= lightIntensity;
+        contribution *= sphereColor;
+
+        color += mat.GetEmission();
 
         // 更新反射光线
         ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
-        ray.Direction = glm::reflect(ray.Direction, payload.WorldNormal + mat.Roughness * Random::Vec3(-0.5f, 0.5f));
+        //ray.Direction = glm::reflect(ray.Direction, payload.WorldNormal + mat.Roughness * Random::Vec3(-0.5f, 0.5f));
+        ray.Direction = glm::normalize(payload.WorldNormal + Random::InUnitSphere());
     }
 
     return glm::vec4(color, 1.0f);
@@ -179,7 +181,7 @@ RayTracingRenderer::HitPayload RayTracingRenderer::Miss(const Ray& ray)
 
 RayTracingLayer::RayTracingLayer()
     : ILayer("RayTracing")
-    , m_camera(45.0f, 0.1f, 100.0f, glm::vec3(0, 0, 3))
+    , m_camera(45.0f, 0.1f, 100.0f, glm::vec3(0, 0, 6))
 {
     {
         Material& mat = m_scene.Materials.emplace_back();
@@ -192,10 +194,24 @@ RayTracingLayer::RayTracingLayer()
         mat.Roughness = 0.1f;
     }
     {
+        Material& mat = m_scene.Materials.emplace_back();
+        mat.Albedo = { 0.8f, 0.5f, 0.2f };
+        mat.Roughness = 0.1f;
+        mat.EmissionColor = mat.Albedo;
+        mat.EmissionPower = 2.0f;
+    }
+    {
         Sphere sphere;
         sphere.Position = { 0.0f, 0.0f, 0.0f };
-        sphere.Radius = 0.5f;
+        sphere.Radius = 1.0f;
         sphere.MaterialIndex = 0;
+        m_scene.Spheres.emplace_back(sphere);
+    }
+    {
+        Sphere sphere;
+        sphere.Position = { 2.0f, 0.0f, 0.0f };
+        sphere.Radius = 1.0f;
+        sphere.MaterialIndex = 2;
         m_scene.Spheres.emplace_back(sphere);
     }
     {
@@ -238,7 +254,7 @@ void RayTracingLayer::OnImGuiRender()
         Sphere& sphere = m_scene.Spheres[i];
         bool isChanged = false;
         ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
-        ImGui::DragFloat("Radius", &sphere.Radius, 0.1f);
+        ImGui::DragFloat("Radius", &sphere.Radius, 0.1f, 1000.0f);
         ImGui::DragInt("Material", &sphere.MaterialIndex, 1.0f, 0, (int)m_scene.Materials.size() - 1);
         ImGui::Separator();
         ImGui::PopID();
@@ -250,6 +266,8 @@ void RayTracingLayer::OnImGuiRender()
         ImGui::ColorEdit3("Albedo", glm::value_ptr(material.Albedo));
         ImGui::DragFloat("Roughness", &material.Roughness, 0.05f, 0.0f, 1.0f);
         ImGui::DragFloat("Metallic", &material.Metallic, 0.05f, 0.0f, 1.0f);
+        ImGui::ColorEdit3("Emission Color", glm::value_ptr(material.EmissionColor));
+        ImGui::DragFloat("Emission Power", &material.EmissionPower, 0.05f, 0.0f, FLT_MAX);
         ImGui::Separator();
         ImGui::PopID();
     }
